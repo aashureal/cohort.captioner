@@ -3,8 +3,9 @@ require("dotenv").config();
 const app = require("./src/app.js");
 const connectToDatabase = require("./src/db/db.js");
 const authRouter = require("./src/routes/auth.routes.js");
+const postRouter = require("./src/routes/post.routes.js");
 
-connectToDatabase()
+connectToDatabase();
 // Health Check Route
 app.get("/", (req, res) => {
   res.send({ message: "Hello from Server" });
@@ -12,6 +13,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRouter);
+app.use("/api/post", postRouter);
 
 // Error Handler Middleware
 app.use((err, req, res, next) => {

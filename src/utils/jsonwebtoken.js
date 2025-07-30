@@ -5,6 +5,11 @@ const createToken = (userId) => {
   });
 };
 
+const verifyToken = (token) => {
+  return jsonwebtoken.verify(token, process.env.JWT_SECRET);
+};
+
 module.exports = {
   createToken,
+  verifyToken,
 };
