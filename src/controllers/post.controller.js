@@ -1,9 +1,7 @@
 const Post = require("../models/post.model");
 const User = require("../models/user.model");
-
 const imagekit = require("../utils/imagekit");
-
-const { generateCaptionWithTags } = require("../service/ai.service");
+const generateCaption = require("../service/ai.service");
 
 const createPost = async (req, res) => {
   try {
@@ -21,12 +19,7 @@ const createPost = async (req, res) => {
       folder: "cohort-captioner",
     });
 
-    // Generate caption with Gemini AI
-    // const caption = await generateCaptionWithTags(req.file.buffer);
-    const caption = await generateCaptionWithTags(
-      req.file.buffer,
-      req.file.mimetype
-    );
+    const caption = await generateCaption(uploadResponse.url);
 
     // Create new Post with AI-generated caption
     const newPost = new Post({

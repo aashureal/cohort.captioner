@@ -1,7 +1,6 @@
-
 const JWT = require("../utils/jsonwebtoken");
 
-const isLoggedIn = (req, res, next) => {
+const protect = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token)
@@ -21,4 +20,4 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
-module.exports = isLoggedIn;
+module.exports = protect;

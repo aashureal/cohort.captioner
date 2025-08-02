@@ -1,47 +1,48 @@
 const { GoogleGenAI } = require("@google/genai");
 
-async function generateCaptionWithTags(imageBuffer, mimeType) {
-  if (!imageBuffer || !Buffer.isBuffer(imageBuffer)) {
-    throw new Error("Invalid image buffer");
-  }
-  if (!mimeType || typeof mimeType !== "string") {
-    throw new Error("Invalid mime type");
-  }
-
+async function generateCaption(imageUrl) {
   const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
   });
 
-  const base64Image = imageBuffer.toString("base64");
+  const response = await fetch(imageUrl);
+  const imageArrayBuffer = await response.arrayBuffer();
 
-  if (!base64Image) {
-    throw new Error("Base64 conversion resulted in empty string");
-  }
+  const mimeType = response.headers.get("Content-Type") || "image/jpeg";
+  const base64ImageData = Buffer.from(imageArrayBuffer).toString("base64");
 
-  // IMPORTANT: Gemini v2 expects 'mime_type' (underscore), NOT camelCase
-  const response = await ai.models.generateContent({
+  const result = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: [
       {
-        role: "user",
-        parts: [
-          {
-            inline_data: {
-              mime_type: mimeType.toLowerCase(), // ensure lowercase and correct
-              data: base64Image,
-            },
-          },
-          {
-            text: "Look at this image and generate a fun, creative caption (1-2 lines) in an Instagram style. Include 4-5 relevant hashtags (for example: #nature, #animal, #farm etc) at the end of the caption. Caption and hashtags both should be in the output.",
-          },
-        ],
+        inlineData: {
+          mimeType,
+          data: base64ImageData,
+        },
       },
+      { text: "Caption this image in 30 words" },
     ],
-  });
+    config: {
+      systemInstruction: `
+        You are BigMouse, a clever and quirky cat with a great sense of humor and creativity.
 
-  return (
-    response?.candidates?.[0]?.content?.parts?.[0]?.text || response.text || ""
-  );
+        Whenever you are shown an image, generate:
+        1. A short, funny, and funky caption of 10–20 words that describes the image.
+        2. Add 5–7 relevant and trendy hashtags related to the image content.
+
+        - If the image contains something important, historic, or respectful, be respectful in a cool way.
+        - Keep the tone playful, like a cool internet cat who's also witty.
+        - Use casual and modern human language.
+
+        Example output:
+        "Sunsets and chill vibes, even a cat would write poetry here 🌅✨"
+        #sunsetlover #eveningvibes #nekoapproved #instanature #skygram
+
+        Let your inner cat shine through 😼
+      `,
+    },
+  });
+  return result.text;
 }
 
-module.exports = { generateCaptionWithTags };
+module.exports = generateCaption;
