@@ -6,20 +6,22 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aashureal/cohort.captioner.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aashureal/cohort.captioner/issues"
+  },
+  "homepage": "https://github.com/aashureal/cohort.captioner#readme",
   "description": "",
   "dependencies": {
-    "@google/genai": "^1.11.0",
     "bcrypt": "^6.0.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "imagekit": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.5",
-    "multer": "^2.0.2"
+    "mongoose": "^8.17.0"
   }
 }
